@@ -331,6 +331,108 @@ a {
     background-color: #f8fafc;
 }
 
+.lista-proyectos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.tarjeta-proyecto {
+    overflow: hidden;
+    border: 1px solid #d8e1eb;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 14px rgb(31 41 55 / 8%);
+}
+
+.tarjeta-proyecto__encabezado {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px;
+    color: #ffffff;
+    background-color: #123c69;
+}
+
+.tarjeta-proyecto__etiqueta {
+    margin: 0 0 6px;
+    color: #b9daf5;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.tarjeta-proyecto__encabezado h4 {
+    margin: 0;
+    font-size: 1.3rem;
+    line-height: 1.3;
+}
+
+.tarjeta-proyecto__contenido {
+    display: grid;
+    gap: 20px;
+    padding: 20px;
+}
+
+.tarjeta-proyecto__seccion h5 {
+    margin: 0 0 8px;
+    color: #243b53;
+    font-size: 1rem;
+}
+
+.tarjeta-proyecto__seccion p {
+    margin: 0;
+    color: #52606d;
+    line-height: 1.6;
+}
+
+.datos-externos {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+}
+
+.datos-externos div {
+    padding: 12px;
+    border-radius: 6px;
+    background-color: #f0f4f8;
+}
+
+.datos-externos dt {
+    margin-bottom: 4px;
+    color: #52606d;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.datos-externos dd {
+    margin: 0;
+    color: #243b53;
+    line-height: 1.5;
+}
+
+.mensaje-carga {
+    margin: 0;
+    padding: 28px;
+    border: 1px solid #9fb3c8;
+    border-radius: 8px;
+    color: #334e68;
+    text-align: center;
+    background-color: #f8fafc;
+}
+
+.mensaje-error {
+    margin: 0 0 24px;
+    padding: 12px 14px;
+    border-left: 4px solid #b42318;
+    color: #7a271a;
+    background-color: #fef3f2;
+    line-height: 1.5;
+}
+
 @media (max-width: 600px) {
     .encabezado-principal {
         padding: 36px 20px;
@@ -369,5 +471,14 @@ a {
 
     .seccion-acciones .boton {
         width: 100%;
+    }
+
+        .lista-proyectos {
+        grid-template-columns: 1fr;
+    }
+
+    .tarjeta-proyecto__encabezado,
+    .tarjeta-proyecto__contenido {
+        padding: 18px;
     }
 }

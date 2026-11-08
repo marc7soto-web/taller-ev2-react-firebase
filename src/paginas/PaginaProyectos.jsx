@@ -1,9 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormularioProyecto from "../Componentes/Proyectos/FormularioProyecto";
+import ListaProyectos from "../Componentes/Proyectos/ListaProyectos";
+import { observarProyectos } from "../servicios/servicioProyectos";
 
 function PaginaProyectos() {
+    const [proyectos, establecerProyectos] = useState([]);
     const [mostrarFormulario, establecerMostrarFormulario] = useState(false);
+    const [cargando, establecerCargando] = useState(true);
     const [mensajePagina, establecerMensajePagina] = useState("");
+    const [mensajeError, establecerMensajeError] = useState("");
+
+    useEffect(() => {
+        // Se mantiene una escucha activa sobre la colección de proyectos.
+        const cancelarObservacion = observarProyectos(
+            (proyectosRecibidos) => {
+                establecerProyectos(proyectosRecibidos);
+                establecerCargando(false);
+                establecerMensajeError("");
+            },
+            (error) => {
+                console.error("No se pudieron cargar los proyectos:", error);
+                establecerCargando(false);
+                establecerMensajeError(
+                    "No se pudieron cargar los proyectos desde Firestore."
+                );
+            }
+        );
+
+        // Se cancela la escucha cuando el componente deja de utilizarse.
+        return () => {
+            cancelarObservacion();
+        };
+    }, []);
 
     const abrirFormulario = () => {
         // Se muestra el formulario cuando se solicita agregar un proyecto.
@@ -68,6 +96,15 @@ function PaginaProyectos() {
                     </p>
                 )}
 
+                {mensajeError && (
+                    <p
+                        className="mensaje-error"
+                        role="alert"
+                    >
+                        {mensajeError}
+                    </p>
+                )}
+
                 {mostrarFormulario && (
                     <FormularioProyecto
                         alCancelar={cerrarFormulario}
@@ -76,7 +113,21 @@ function PaginaProyectos() {
                 )}
 
                 <div className="seccion-listado">
-                    <p className="mensaje-vacio">No hay proyectos.</p>
+                    {cargando ? (
+                        <p
+                            className="mensaje-carga"
+                            role="status"
+                            aria-live="polite"
+                        >
+                            Cargando proyectos...
+                        </p>
+                    ) : proyectos.length === 0 ? (
+                        <p className="mensaje-vacio">
+                            No hay proyectos.
+                        </p>
+                    ) : (
+                        <ListaProyectos proyectos={proyectos} />
+                    )}
                 </div>
             </div>
         </section>
