@@ -1,122 +1,82 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { NavLink, Navigate, Route, Routes } from "react-router-dom";
+import PaginaProyectos from "./paginas/PaginaProyectos";
+import PaginaTareas from "./paginas/PaginaTareas";
 
 function App() {
-  const [count, setCount] = useState(0)
+    return (
+        <div className="aplicacion">
+            {/* Se presenta el encabezado general de la aplicación. */}
+            <header className="encabezado-principal">
+                <div className="encabezado-principal__contenido">
+                    <p className="encabezado-principal__etiqueta">
+                        Evaluación Unidad N.º 2
+                    </p>
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+                    <h1>Gestor de proyectos y tareas</h1>
 
-      <div className="ticks"></div>
+                    <p>
+                        Aplicación desarrollada con React, Firebase Firestore,
+                        Firebase Functions, Axios y Simple React Validator.
+                    </p>
+                </div>
+            </header>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
+            {/* Se permite la navegación entre los dos casos del taller. */}
+            <nav
+                className="navegacion-principal"
+                aria-label="Navegación principal"
+            >
+                <NavLink
+                    to="/proyectos"
+                    className={({ isActive }) =>
+                        isActive
+                            ? "navegacion-principal__enlace navegacion-principal__enlace--activo"
+                            : "navegacion-principal__enlace"
+                    }
                 >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+                    Proyectos
+                </NavLink>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+                <NavLink
+                    to="/tareas"
+                    className={({ isActive }) =>
+                        isActive
+                            ? "navegacion-principal__enlace navegacion-principal__enlace--activo"
+                            : "navegacion-principal__enlace"
+                    }
+                >
+                    Tareas
+                </NavLink>
+            </nav>
+
+            {/* Se renderiza la página correspondiente a la dirección seleccionada. */}
+            <main className="contenido-principal">
+                <Routes>
+                    <Route
+                        path="/"
+                        element={<Navigate to="/proyectos" replace />}
+                    />
+                    <Route
+                        path="/proyectos"
+                        element={<PaginaProyectos />}
+                    />
+                    <Route
+                        path="/tareas"
+                        element={<PaginaTareas />}
+                    />
+                    <Route
+                        path="*"
+                        element={<Navigate to="/proyectos" replace />}
+                    />
+                </Routes>
+            </main>
+
+            {/* Se presenta información general al final de la aplicación. */}
+            <footer className="pie-pagina">
+                <p>Taller de Programación de Componentes con React</p>
+            </footer>
+        </div>
+    );
 }
 
-export default App
+export default App;
