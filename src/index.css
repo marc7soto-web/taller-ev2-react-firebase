@@ -452,6 +452,93 @@ a {
     background-color: #7a271a;
 }
 
+.lista-tareas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.tarjeta-tarea {
+    overflow: hidden;
+    border: 1px solid #d8e1eb;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 14px rgb(31 41 55 / 8%);
+}
+
+.tarjeta-tarea__encabezado {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px;
+    color: #ffffff;
+    background-color: #28659c;
+}
+
+.tarjeta-tarea__etiqueta {
+    margin: 0 0 6px;
+    color: #d9eaf7;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.tarjeta-tarea__encabezado h4 {
+    margin: 0;
+    font-size: 1.3rem;
+    line-height: 1.3;
+}
+
+.tarjeta-tarea__contenido {
+    display: grid;
+    gap: 20px;
+    padding: 20px;
+}
+
+.tarjeta-tarea__seccion h5 {
+    margin: 0 0 8px;
+    color: #243b53;
+    font-size: 1rem;
+}
+
+.tarjeta-tarea__seccion p {
+    margin: 0;
+    color: #52606d;
+    line-height: 1.6;
+}
+
+.tarjeta-tarea__acciones {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 4px;
+    border-top: 1px solid #d8e1eb;
+}
+
+.prioridad {
+    flex-shrink: 0;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.prioridad--alta {
+    color: #7a271a;
+    background-color: #fee4e2;
+}
+
+.prioridad--media {
+    color: #7a2e0e;
+    background-color: #fef0c7;
+}
+
+.prioridad--baja {
+    color: #135200;
+    background-color: #d9f7be;
+}
+
 @media (max-width: 600px) {
     .encabezado-principal {
         padding: 36px 20px;
@@ -502,6 +589,28 @@ a {
     }
 
     .tarjeta-proyecto__acciones .boton {
+        width: 100%;
+    }
+
+        .lista-tareas {
+        grid-template-columns: 1fr;
+    }
+
+    .tarjeta-tarea__encabezado {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .tarjeta-tarea__encabezado,
+    .tarjeta-tarea__contenido {
+        padding: 18px;
+    }
+
+    .prioridad {
+        align-self: flex-start;
+    }
+
+    .tarjeta-tarea__acciones .boton {
         width: 100%;
     }
 }
