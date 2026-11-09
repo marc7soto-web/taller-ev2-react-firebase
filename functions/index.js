@@ -17,7 +17,7 @@ exports.eliminarProyecto = onCall(
       ) {
         throw new HttpsError(
             "invalid-argument",
-            "Se debe proporcionar un identificador válido.",
+            "Se debe proporcionar un identificador de proyecto válido.",
         );
       }
 
@@ -29,7 +29,7 @@ exports.eliminarProyecto = onCall(
         const documentoProyecto =
           await referenciaProyecto.get();
 
-        // Se comprueba que el documento exista antes de eliminarlo.
+        // Se comprueba que el proyecto exista antes de eliminarlo.
         if (!documentoProyecto.exists) {
           throw new HttpsError(
               "not-found",
@@ -37,7 +37,7 @@ exports.eliminarProyecto = onCall(
           );
         }
 
-        // Se elimina el documento desde Firestore.
+        // Se elimina el proyecto desde Firestore.
         await referenciaProyecto.delete();
 
         return {
@@ -58,6 +58,65 @@ exports.eliminarProyecto = onCall(
         throw new HttpsError(
             "internal",
             "No se pudo eliminar el proyecto.",
+        );
+      }
+    },
+);
+
+exports.eliminarTarea = onCall(
+    {region: "southamerica-east1"},
+    async (solicitud) => {
+      const identificadorTarea = solicitud.data &&
+        solicitud.data.identificadorTarea;
+
+      // Se comprueba que se haya enviado un identificador válido.
+      if (
+        !identificadorTarea ||
+        typeof identificadorTarea !== "string"
+      ) {
+        throw new HttpsError(
+            "invalid-argument",
+            "Se debe proporcionar un identificador de tarea válido.",
+        );
+      }
+
+      try {
+        const referenciaTarea = getFirestore()
+            .collection("tareas")
+            .doc(identificadorTarea);
+
+        const documentoTarea =
+          await referenciaTarea.get();
+
+        // Se comprueba que la tarea exista antes de eliminarla.
+        if (!documentoTarea.exists) {
+          throw new HttpsError(
+              "not-found",
+              "La tarea solicitada no existe.",
+          );
+        }
+
+        // Se elimina la tarea desde Firestore.
+        await referenciaTarea.delete();
+
+        return {
+          eliminada: true,
+          identificadorTarea,
+          mensaje: "La tarea fue eliminada correctamente.",
+        };
+      } catch (error) {
+        if (error instanceof HttpsError) {
+          throw error;
+        }
+
+        console.error(
+            "No se pudo eliminar la tarea:",
+            error,
+        );
+
+        throw new HttpsError(
+            "internal",
+            "No se pudo eliminar la tarea.",
         );
       }
     },
