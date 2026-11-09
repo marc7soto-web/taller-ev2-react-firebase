@@ -1,16 +1,51 @@
-# React + Vite
+# Taller Evaluación 2
+# Proyecto aplicación de gestión de proyectos y tareas con React y Firebase
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Aplicación web para gestionar proyectos y tareas, desarrollada con React, Vite y Firebase. Permite agregar, visualizar y eliminar registros almacenados en Cloud Firestore.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Enlaces
 
-## React Compiler
+- Repositorio en GitHub: 
+  https://github.com/marc7soto-web/taller-ev2-react-firebase.git
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Aplicación desplegada:
+  https://taller-ev2-react-firebase.web.app
+  
+- Consola de Firebase: 
+  https://console.firebase.google.com/project/taller-ev2-react-firebase/overview
 
-## Expanding the Oxlint configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Funcionalidades
+
+- Gestión de proyectos y tareas.
+- Validación de formularios.
+- Consumo de datos externos mediante Axios.
+- Almacenamiento y lectura en tiempo real con Firestore.
+- Listados generados con `map()` y claves únicas.
+- Renderizado condicional y uso de `React.Fragment`.
+- Eliminación de registros mediante Firebase Functions.
+- Navegación con React Router.
+
+## Tecnologías
+
+- React y Vite.
+- React Router DOM.
+- Firebase Firestore y Firebase Functions.
+- Axios.
+- Simple React Validator.
+- Git y GitHub.
+
+## Instalación
+
+```text
+git clone https://github.com/marc7soto-web/taller-ev2-react-firebase.git
+cd taller-ev2-react-firebase
+npm install
+npm run dev
+```
+
+## Rutas
+
+- `/proyectos`: gestión de proyectos.
+- `/tareas`: gestión de tareas.
