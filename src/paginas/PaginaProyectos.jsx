@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import FormularioProyecto from "../Componentes/Proyectos/FormularioProyecto";
 import ListaProyectos from "../Componentes/Proyectos/ListaProyectos";
-import { observarProyectos } from "../servicios/servicioProyectos";
+import {
+    eliminarProyecto,
+    observarProyectos,
+} from "../servicios/servicioProyectos";
 
 function PaginaProyectos() {
     const [proyectos, establecerProyectos] = useState([]);
@@ -9,6 +12,10 @@ function PaginaProyectos() {
     const [cargando, establecerCargando] = useState(true);
     const [mensajePagina, establecerMensajePagina] = useState("");
     const [mensajeError, establecerMensajeError] = useState("");
+    const [
+        identificadorEliminando,
+        establecerIdentificadorEliminando,
+    ] = useState("");
 
     useEffect(() => {
         // Se mantiene una escucha activa sobre la colección de proyectos.
@@ -34,9 +41,10 @@ function PaginaProyectos() {
     }, []);
 
     const abrirFormulario = () => {
-        // Se muestra el formulario cuando se solicita agregar un proyecto.
+        // Se muestra el formulario para agregar un proyecto.
         establecerMostrarFormulario(true);
         establecerMensajePagina("");
+        establecerMensajeError("");
     };
 
     const cerrarFormulario = () => {
@@ -46,9 +54,44 @@ function PaginaProyectos() {
     };
 
     const manejarProyectoGuardado = () => {
-        // Se oculta el formulario y se informa que el proyecto fue guardado.
+        // Se informa que el proyecto fue guardado correctamente.
         establecerMostrarFormulario(false);
         establecerMensajePagina("El proyecto fue agregado correctamente.");
+        establecerMensajeError("");
+    };
+
+    const manejarEliminacion = async (
+        identificadorProyecto,
+        nombreProyecto
+    ) => {
+        const confirmacion = window.confirm(
+            `¿Deseas eliminar el proyecto "${nombreProyecto}"?`
+        );
+
+        if (!confirmacion) {
+            return;
+        }
+
+        try {
+            establecerIdentificadorEliminando(identificadorProyecto);
+            establecerMensajePagina("");
+            establecerMensajeError("");
+
+            // Se invoca Firebase Function para eliminar el proyecto.
+            await eliminarProyecto(identificadorProyecto);
+
+            establecerMensajePagina(
+                "El proyecto fue eliminado correctamente."
+            );
+        } catch (error) {
+            console.error("No se pudo eliminar el proyecto:", error);
+
+            establecerMensajeError(
+                "No se pudo eliminar el proyecto mediante Firebase Functions."
+            );
+        } finally {
+            establecerIdentificadorEliminando("");
+        }
     };
 
     return (
@@ -126,7 +169,13 @@ function PaginaProyectos() {
                             No hay proyectos.
                         </p>
                     ) : (
-                        <ListaProyectos proyectos={proyectos} />
+                        <ListaProyectos
+                            proyectos={proyectos}
+                            alEliminar={manejarEliminacion}
+                            identificadorEliminando={
+                                identificadorEliminando
+                            }
+                        />
                     )}
                 </div>
             </div>

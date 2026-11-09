@@ -433,6 +433,25 @@ a {
     line-height: 1.5;
 }
 
+.tarjeta-proyecto__acciones {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 4px;
+    border-top: 1px solid #d8e1eb;
+}
+
+.boton--peligro {
+    border-color: #b42318;
+    color: #ffffff;
+    background-color: #b42318;
+}
+
+.boton--peligro:hover:not(:disabled),
+.boton--peligro:focus-visible:not(:disabled) {
+    border-color: #7a271a;
+    background-color: #7a271a;
+}
+
 @media (max-width: 600px) {
     .encabezado-principal {
         padding: 36px 20px;
@@ -473,12 +492,16 @@ a {
         width: 100%;
     }
 
-        .lista-proyectos {
+    .lista-proyectos {
         grid-template-columns: 1fr;
     }
 
     .tarjeta-proyecto__encabezado,
     .tarjeta-proyecto__contenido {
         padding: 18px;
+    }
+
+    .tarjeta-proyecto__acciones .boton {
+        width: 100%;
     }
 }

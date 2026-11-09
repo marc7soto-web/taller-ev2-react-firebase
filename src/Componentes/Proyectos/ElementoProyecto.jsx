@@ -1,6 +1,10 @@
 import React from "react";
 
-function ElementoProyecto({ proyecto }) {
+function ElementoProyecto({
+    proyecto,
+    alEliminar,
+    eliminando,
+}) {
     const tituloSugerido =
         proyecto.datoAdicional?.tituloSugerido ??
         "No se obtuvo información adicional.";
@@ -8,9 +12,14 @@ function ElementoProyecto({ proyecto }) {
     const identificadorExterno =
         proyecto.datoAdicional?.identificadorExterno ?? "No disponible";
 
+    const solicitarEliminacion = () => {
+        // Se solicita a la página principal eliminar el proyecto seleccionado.
+        alEliminar(proyecto.id, proyecto.nombre);
+    };
+
     return (
         <React.Fragment>
-            {/* Se utiliza React.Fragment para evitar contenedores innecesarios. */}
+            {/* Se utiliza React.Fragment para evitar nodos innecesarios. */}
             <article className="tarjeta-proyecto">
                 <div className="tarjeta-proyecto__encabezado">
                     <div>
@@ -42,6 +51,19 @@ function ElementoProyecto({ proyecto }) {
                                 <dd>{tituloSugerido}</dd>
                             </div>
                         </dl>
+                    </div>
+
+                    <div className="tarjeta-proyecto__acciones">
+                        <button
+                            className="boton boton--peligro"
+                            type="button"
+                            disabled={eliminando}
+                            onClick={solicitarEliminacion}
+                        >
+                            {eliminando
+                                ? "Eliminando..."
+                                : "Eliminar proyecto"}
+                        </button>
                     </div>
                 </div>
             </article>

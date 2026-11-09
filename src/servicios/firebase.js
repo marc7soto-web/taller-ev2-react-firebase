@@ -11,13 +11,16 @@ const configuracionFirebase = {
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// Se inicializa Firebase utilizando las variables de entorno del proyecto.
+// Se inicializa Firebase con las variables de entorno del proyecto.
 const aplicacionFirebase = initializeApp(configuracionFirebase);
 
-// Se obtiene la instancia que permitirá trabajar con Firestore.
+// Se obtiene la instancia que permite trabajar con Firestore.
 const baseDatos = getFirestore(aplicacionFirebase);
 
-// Se obtiene la instancia que permitirá invocar Firebase Functions.
-const funciones = getFunctions(aplicacionFirebase);
+// Se configura Functions con la misma región utilizada en el servidor.
+const funciones = getFunctions(
+    aplicacionFirebase,
+    "southamerica-east1"
+);
 
 export { aplicacionFirebase, baseDatos, funciones };

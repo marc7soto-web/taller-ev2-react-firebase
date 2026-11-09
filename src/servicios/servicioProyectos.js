@@ -6,7 +6,8 @@ import {
     query,
     serverTimestamp,
 } from "firebase/firestore";
-import { baseDatos } from "./firebase";
+import { httpsCallable } from "firebase/functions";
+import { baseDatos, funciones } from "./firebase";
 
 const nombreColeccion = "proyectos";
 const referenciaProyectos = collection(baseDatos, nombreColeccion);
@@ -24,13 +25,13 @@ const agregarProyecto = async (proyecto) => {
 };
 
 const observarProyectos = (alRecibirProyectos, alOcurrirError) => {
-    // Se ordenan los proyectos desde el registro más reciente al más antiguo.
+    // Se ordenan los proyectos desde el registro más reciente.
     const consultaProyectos = query(
         referenciaProyectos,
         orderBy("creadoEn", "desc")
     );
 
-    // Se mantiene una escucha activa para reflejar automáticamente los cambios.
+    // Se mantiene una escucha para actualizar automáticamente la lista.
     const cancelarObservacion = onSnapshot(
         consultaProyectos,
         (resultadoConsulta) => {
@@ -49,4 +50,23 @@ const observarProyectos = (alRecibirProyectos, alOcurrirError) => {
     return cancelarObservacion;
 };
 
-export { agregarProyecto, observarProyectos };
+const eliminarProyecto = async (identificadorProyecto) => {
+    // Se obtiene una referencia a la función desplegada en Firebase.
+    const funcionEliminarProyecto = httpsCallable(
+        funciones,
+        "eliminarProyecto"
+    );
+
+    // Se invoca la función enviando el identificador del proyecto.
+    const respuesta = await funcionEliminarProyecto({
+        identificadorProyecto,
+    });
+
+    return respuesta.data;
+};
+
+export {
+    agregarProyecto,
+    observarProyectos,
+    eliminarProyecto,
+};
