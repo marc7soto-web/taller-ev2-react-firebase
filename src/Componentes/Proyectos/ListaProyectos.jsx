@@ -2,6 +2,7 @@ import ElementoProyecto from "./ElementoProyecto";
 
 function ListaProyectos({
     proyectos,
+    alEditar,
     alEliminar,
     identificadorEliminando,
 }) {
@@ -12,6 +13,7 @@ function ListaProyectos({
                 <ElementoProyecto
                     key={proyecto.id}
                     proyecto={proyecto}
+                    alEditar={alEditar}
                     alEliminar={alEliminar}
                     eliminando={
                         identificadorEliminando === proyecto.id

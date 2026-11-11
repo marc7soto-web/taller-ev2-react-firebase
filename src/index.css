@@ -436,8 +436,21 @@ a {
 .tarjeta-proyecto__acciones {
     display: flex;
     justify-content: flex-end;
+    gap: 12px;
     padding-top: 4px;
     border-top: 1px solid #d8e1eb;
+}
+
+.boton--editar {
+    border-color: #28659c;
+    color: #ffffff;
+    background-color: #28659c;
+}
+
+.boton--editar:hover:not(:disabled),
+.boton--editar:focus-visible:not(:disabled) {
+    border-color: #123c69;
+    background-color: #123c69;
 }
 
 .boton--peligro {
@@ -592,7 +605,7 @@ a {
         width: 100%;
     }
 
-        .lista-tareas {
+    .lista-tareas {
         grid-template-columns: 1fr;
     }
 
@@ -611,6 +624,14 @@ a {
     }
 
     .tarjeta-tarea__acciones .boton {
+        width: 100%;
+    }
+
+    .tarjeta-proyecto__acciones {
+        flex-direction: column;
+    }
+
+    .tarjeta-proyecto__acciones .boton {
         width: 100%;
     }
 }

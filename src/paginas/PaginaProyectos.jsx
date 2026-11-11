@@ -9,6 +9,7 @@ import {
 function PaginaProyectos() {
     const [proyectos, establecerProyectos] = useState([]);
     const [mostrarFormulario, establecerMostrarFormulario] = useState(false);
+    const [proyectoEditando, establecerProyectoEditando] = useState(null);
     const [cargando, establecerCargando] = useState(true);
     const [mensajePagina, establecerMensajePagina] = useState("");
     const [mensajeError, establecerMensajeError] = useState("");
@@ -26,8 +27,13 @@ function PaginaProyectos() {
                 establecerMensajeError("");
             },
             (error) => {
-                console.error("No se pudieron cargar los proyectos:", error);
+                console.error(
+                    "No se pudieron cargar los proyectos:",
+                    error
+                );
+
                 establecerCargando(false);
+
                 establecerMensajeError(
                     "No se pudieron cargar los proyectos desde Firestore."
                 );
@@ -41,23 +47,49 @@ function PaginaProyectos() {
     }, []);
 
     const abrirFormulario = () => {
-        // Se muestra el formulario para agregar un proyecto.
+        // Se abre un formulario vacío para agregar un proyecto.
+        establecerProyectoEditando(null);
         establecerMostrarFormulario(true);
         establecerMensajePagina("");
         establecerMensajeError("");
     };
 
     const cerrarFormulario = () => {
-        // Se oculta el formulario cuando se cancela la operación.
+        // Se cierra el formulario y se cancela cualquier edición.
         establecerMostrarFormulario(false);
+        establecerProyectoEditando(null);
         establecerMensajePagina("");
     };
 
-    const manejarProyectoGuardado = () => {
-        // Se informa que el proyecto fue guardado correctamente.
-        establecerMostrarFormulario(false);
-        establecerMensajePagina("El proyecto fue agregado correctamente.");
+    const abrirEdicion = (proyecto) => {
+        // Se abre el formulario con los datos del proyecto seleccionado.
+        establecerProyectoEditando(proyecto);
+        establecerMostrarFormulario(true);
+        establecerMensajePagina("");
         establecerMensajeError("");
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
+
+    const manejarProyectoGuardado = (operacion) => {
+        // Se cierra el formulario después de agregar o actualizar.
+        establecerMostrarFormulario(false);
+        establecerProyectoEditando(null);
+        establecerMensajeError("");
+
+        if (operacion === "actualizado") {
+            establecerMensajePagina(
+                "El proyecto fue actualizado correctamente."
+            );
+            return;
+        }
+
+        establecerMensajePagina(
+            "El proyecto fue agregado correctamente."
+        );
     };
 
     const manejarEliminacion = async (
@@ -73,7 +105,10 @@ function PaginaProyectos() {
         }
 
         try {
-            establecerIdentificadorEliminando(identificadorProyecto);
+            establecerIdentificadorEliminando(
+                identificadorProyecto
+            );
+
             establecerMensajePagina("");
             establecerMensajeError("");
 
@@ -84,7 +119,10 @@ function PaginaProyectos() {
                 "El proyecto fue eliminado correctamente."
             );
         } catch (error) {
-            console.error("No se pudo eliminar el proyecto:", error);
+            console.error(
+                "No se pudo eliminar el proyecto:",
+                error
+            );
 
             establecerMensajeError(
                 "No se pudo eliminar el proyecto mediante Firebase Functions."
@@ -97,13 +135,15 @@ function PaginaProyectos() {
     return (
         <section className="pagina">
             <header className="pagina__encabezado">
-                <p className="pagina__etiqueta">Caso N.º 1</p>
+                <p className="pagina__etiqueta">
+                    Caso N.º 1
+                </p>
 
                 <h2>Gestión de proyectos</h2>
 
                 <p>
-                    Agrega, visualiza y elimina proyectos almacenados en
-                    Firebase Firestore.
+                    Agrega, visualiza, modifica y elimina proyectos
+                    almacenados en Firebase Firestore.
                 </p>
             </header>
 
@@ -113,8 +153,8 @@ function PaginaProyectos() {
                         <h3>Proyectos registrados</h3>
 
                         <p>
-                            Administra los proyectos guardados en la base de
-                            datos.
+                            Administra los proyectos guardados en la base
+                            de datos.
                         </p>
                     </div>
 
@@ -150,6 +190,8 @@ function PaginaProyectos() {
 
                 {mostrarFormulario && (
                     <FormularioProyecto
+                        key={proyectoEditando?.id ?? "nuevo"}
+                        proyectoEditando={proyectoEditando}
                         alCancelar={cerrarFormulario}
                         alGuardar={manejarProyectoGuardado}
                     />
@@ -171,6 +213,7 @@ function PaginaProyectos() {
                     ) : (
                         <ListaProyectos
                             proyectos={proyectos}
+                            alEditar={abrirEdicion}
                             alEliminar={manejarEliminacion}
                             identificadorEliminando={
                                 identificadorEliminando

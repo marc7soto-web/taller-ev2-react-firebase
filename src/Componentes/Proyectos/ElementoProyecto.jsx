@@ -2,6 +2,7 @@ import React from "react";
 
 function ElementoProyecto({
     proyecto,
+    alEditar,
     alEliminar,
     eliminando,
 }) {
@@ -11,6 +12,11 @@ function ElementoProyecto({
 
     const identificadorExterno =
         proyecto.datoAdicional?.identificadorExterno ?? "No disponible";
+
+    const solicitarEdicion = () => {
+        // Se solicita editar el proyecto seleccionado.
+        alEditar(proyecto);
+    };
 
     const solicitarEliminacion = () => {
         // Se solicita a la página principal eliminar el proyecto seleccionado.
@@ -54,6 +60,15 @@ function ElementoProyecto({
                     </div>
 
                     <div className="tarjeta-proyecto__acciones">
+                        <button
+                            className="boton boton--editar"
+                            type="button"
+                            disabled={eliminando}
+                            onClick={solicitarEdicion}
+                        >
+                            Editar proyecto
+                        </button>
+
                         <button
                             className="boton boton--peligro"
                             type="button"

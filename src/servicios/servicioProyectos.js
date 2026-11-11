@@ -1,10 +1,12 @@
 import {
     addDoc,
     collection,
+    doc,
     onSnapshot,
     orderBy,
     query,
     serverTimestamp,
+    updateDoc,
 } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 import { baseDatos, funciones } from "./firebase";
@@ -22,6 +24,27 @@ const agregarProyecto = async (proyecto) => {
     });
 
     return referenciaDocumento.id;
+};
+
+const actualizarProyecto = async (
+    identificadorProyecto,
+    proyecto
+) => {
+    // Se obtiene la referencia del proyecto que será actualizado.
+    const referenciaProyecto = doc(
+        baseDatos,
+        nombreColeccion,
+        identificadorProyecto
+    );
+
+    // Se actualizan solamente los campos editables del proyecto.
+    await updateDoc(referenciaProyecto, {
+        nombre: proyecto.nombre.trim(),
+        descripcion: proyecto.descripcion.trim(),
+        actualizadoEn: serverTimestamp(),
+    });
+
+    return identificadorProyecto;
 };
 
 const observarProyectos = (alRecibirProyectos, alOcurrirError) => {
@@ -67,6 +90,7 @@ const eliminarProyecto = async (identificadorProyecto) => {
 
 export {
     agregarProyecto,
+    actualizarProyecto,
     observarProyectos,
     eliminarProyecto,
 };

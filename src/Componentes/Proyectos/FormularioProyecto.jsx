@@ -1,28 +1,42 @@
 import { useState } from "react";
 import axios from "axios";
 import SimpleReactValidator from "simple-react-validator";
-import { agregarProyecto } from "../../servicios/servicioProyectos";
+import {
+    actualizarProyecto,
+    agregarProyecto,
+} from "../../servicios/servicioProyectos";
 
-function FormularioProyecto({ alCancelar, alGuardar }) {
-    const [nombre, establecerNombre] = useState("");
-    const [descripcion, establecerDescripcion] = useState("");
+function FormularioProyecto({
+    proyectoEditando,
+    alCancelar,
+    alGuardar,
+}) {
+    const [nombre, establecerNombre] = useState(
+        () => proyectoEditando?.nombre ?? ""
+    );
+
+    const [descripcion, establecerDescripcion] = useState(
+        () => proyectoEditando?.descripcion ?? ""
+    );
     const [guardando, establecerGuardando] = useState(false);
     const [mensajeEstado, establecerMensajeEstado] = useState("");
     const [, forzarActualizacion] = useState(0);
 
     const [validador] = useState(
-    () =>
-        new SimpleReactValidator({
-            className: "mensaje-validacion",
-            messages: {
-                required: "El campo :attribute es obligatorio.",
-                min: "El campo :attribute debe tener al menos :min caracteres.",
-            },
-        })
+        () =>
+            new SimpleReactValidator({
+                className: "mensaje-validacion",
+                messages: {
+                    required: "El campo :attribute es obligatorio.",
+                    min: "El campo :attribute debe tener al menos :min caracteres.",
+                },
+            })
     );
 
+    const esEdicion = Boolean(proyectoEditando);
+
     const limpiarFormulario = () => {
-        // Se restablecen los campos después de guardar correctamente
+        // Se restablecen los campos después de guardar correctamente.
         establecerNombre("");
         establecerDescripcion("");
         validador.hideMessages();
@@ -30,12 +44,12 @@ function FormularioProyecto({ alCancelar, alGuardar }) {
     };
 
     const obtenerDatoAdicional = async () => {
-        // Se consulta una API simulada antes de guardar el proyecto
+        // Se consulta una API simulada antes de guardar un proyecto nuevo.
         const respuesta = await axios.get(
             "https://jsonplaceholder.typicode.com/posts/1"
         );
 
-        // Se seleccionan datos específicos de la respuesta para complementar el proyecto
+        // Se seleccionan datos específicos para complementar el proyecto.
         return {
             identificadorExterno: respuesta.data.id,
             tituloSugerido: respuesta.data.title,
@@ -47,35 +61,70 @@ function FormularioProyecto({ alCancelar, alGuardar }) {
         establecerMensajeEstado("");
 
         if (!validador.allValid()) {
-            // Se muestran los mensajes cuando el formulario no cumple las reglas de validación.
+            // Se muestran los mensajes cuando el formulario no es válido.
             validador.showMessages();
-            forzarActualizacion((valorActual) => valorActual + 1);
+            forzarActualizacion(
+                (valorActual) => valorActual + 1
+            );
             return;
         }
 
         try {
             establecerGuardando(true);
 
-            // Se obtiene información externa mediante Axios antes de guardar el proyecto.
+            if (esEdicion) {
+                // Se actualiza el proyecto existente en Firestore.
+                await actualizarProyecto(
+                    proyectoEditando.id,
+                    {
+                        nombre,
+                        descripcion,
+                    }
+                );
+
+                establecerMensajeEstado(
+                    "El proyecto se actualizó correctamente."
+                );
+
+                if (alGuardar) {
+                    alGuardar("actualizado");
+                }
+
+                return;
+            }
+
+            // Se obtiene información externa antes de crear el proyecto.
             const datoAdicional = await obtenerDatoAdicional();
 
-            // Se guarda el proyecto junto con la información obtenida de la API
+            // Se guarda un proyecto nuevo en Firestore.
             const identificadorProyecto = await agregarProyecto({
                 nombre,
                 descripcion,
                 datoAdicional,
             });
 
-            establecerMensajeEstado("El proyecto se guardó correctamente.");
+            establecerMensajeEstado(
+                "El proyecto se guardó correctamente."
+            );
+
             limpiarFormulario();
 
             if (alGuardar) {
-                alGuardar(identificadorProyecto);
+                alGuardar(
+                    "agregado",
+                    identificadorProyecto
+                );
             }
         } catch (error) {
-            console.error("No se pudo guardar el proyecto:", error);
+            console.error(
+                "No se pudo guardar el proyecto:",
+                error
+            );
+
             establecerMensajeEstado(
-                "No se pudo guardar el proyecto. Inténtalo nuevamente."
+                esEdicion
+                    ? "No se pudo actualizar el proyecto."
+                    : "No se pudo guardar el proyecto."
             );
         } finally {
             establecerGuardando(false);
@@ -83,12 +132,22 @@ function FormularioProyecto({ alCancelar, alGuardar }) {
     };
 
     return (
-        <form className="formulario" onSubmit={manejarEnvio} noValidate>
+        <form
+            className="formulario"
+            onSubmit={manejarEnvio}
+            noValidate
+        >
             <div className="formulario__encabezado">
-                <h3>Agregar proyecto</h3>
+                <h3>
+                    {esEdicion
+                        ? "Editar proyecto"
+                        : "Agregar proyecto"}
+                </h3>
+
                 <p>
-                    Completa los datos requeridos para registrar un nuevo
-                    proyecto.
+                    {esEdicion
+                        ? "Modifica los datos del proyecto seleccionado."
+                        : "Completa los datos requeridos para registrar un nuevo proyecto."}
                 </p>
             </div>
 
@@ -109,7 +168,10 @@ function FormularioProyecto({ alCancelar, alGuardar }) {
                         establecerNombre(evento.target.value)
                     }
                     onBlur={() => {
-                        validador.showMessageFor("nombre del proyecto");
+                        validador.showMessageFor(
+                            "nombre del proyecto"
+                        );
+
                         forzarActualizacion(
                             (valorActual) => valorActual + 1
                         );
@@ -141,6 +203,7 @@ function FormularioProyecto({ alCancelar, alGuardar }) {
                     }
                     onBlur={() => {
                         validador.showMessageFor("descripción");
+
                         forzarActualizacion(
                             (valorActual) => valorActual + 1
                         );
@@ -170,7 +233,13 @@ function FormularioProyecto({ alCancelar, alGuardar }) {
                     type="submit"
                     disabled={guardando}
                 >
-                    {guardando ? "Guardando..." : "Guardar proyecto"}
+                    {guardando
+                        ? esEdicion
+                            ? "Actualizando..."
+                            : "Guardando..."
+                        : esEdicion
+                            ? "Actualizar proyecto"
+                            : "Guardar proyecto"}
                 </button>
 
                 <button
